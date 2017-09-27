@@ -73,7 +73,7 @@ void ellipse() {
 }
 // Arm pieces of TIE Fighter
 void cylinder() {
-  glColor3ub(0,0,150);
+  glColor3ub(0,150,150);
   gluCylinder(gluNewQuadric(),0.1,0.5,3,20,20);
 }
 //------------------------------------------------------------------
@@ -121,7 +121,7 @@ void display() {
   }
   if (tf2 == 1) {
     glPushMatrix();
-    //glScaled(1.1,1.1,1.1);
+    glScaled(1.1,1.1,1.1);
     glRotated(15,0,-1,0);
     glTranslated(0,0,-7);
     drawTieFighter();
@@ -129,7 +129,7 @@ void display() {
   }
   if (tf3 == 1) {
     glPushMatrix();
-    //glScaled(1.3,1.3,1.3);
+    glScaled(1.3,1.3,1.3);
     glRotated(-15,0,-1,0);
     glRotated(45,0,0,1);
     glTranslated(0,0,1);
@@ -138,7 +138,7 @@ void display() {
   }
   if (tf4 == 1) {
     glPushMatrix();
-    //glScaled(1.5,1.5,1.5);
+    glScaled(1.5,1.5,1.5);
     glRotated(-15,0,-1,0);
     glRotated(45,0,0,-1);
     glRotated(15,1,0,0);
