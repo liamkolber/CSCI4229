@@ -48,6 +48,10 @@ void Print(const char* format , ...) {
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
+// FRICKIN' LASER BEAMS
+void lasers() {
+  gluCylinder(gluNewQuadric(),0.1,0.1,3,32,32);
+}
 // Wings of TIE Fighter
 void hexagon() {
   glColor3ub(0,0,150);
@@ -259,6 +263,13 @@ void drawTieFighter() {
   glRotated(180,0,0,0);
   hexagon();
   cylinder();
+  glColor3ub(0,255,0);
+  glRotated(90,1,0,0);
+  glRotated(90,0,1,0);
+  glTranslated(0,2,4);
+  lasers();
+  glTranslated(0,2,1);
+  lasers();
 
   glPopMatrix();
 }
@@ -287,6 +298,14 @@ void drawXWing() {
   glRotated(90,1,0,0);
   glTranslated(4,0,-2);
   nose();
+
+  glColor3ub(255,0,0);
+  glRotated(90,1,0,0);
+  glRotated(90,0,1,0);
+  glTranslated(-0.5,8.5,4);
+  lasers();
+  glTranslated(3,-14,2);
+  lasers();
   glPopMatrix();
 }
 //------------------------------------------------------------------
