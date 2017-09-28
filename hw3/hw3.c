@@ -19,7 +19,7 @@
 int th=90;        //  Azimuth of view angle
 int ph=-5;        //  Elevation of view angle
 double zh=0;      //  Rotation of teapot
-int axes=1;       //  Display axes
+int axes=0;       //  Display axes
 int mode=0;       //  What to display
 int FPS=60;
 int tf1=1;
@@ -49,14 +49,22 @@ void Print(const char* format , ...) {
 }
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-//------------------------------------------------------------------  
+//------------------------------------------------------------------
+/*void background() {
+  int width, height;
+  unsigned char* image = SOIL_load_image("lead_960.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+  SOIL_free_image_data(image);
+}  */
 // Wings of TIE Fighter
 void hexagon() {
   glColor3ub(0,0,150);
   glBegin(GL_POLYGON);
   for(int i = 0; i < 6; ++i) {
+    glColor3ub(0,0,150);
     glVertex3f(4*sin(i/6.0*2*M_PI), 4*cos(i/6.0*2*M_PI),0);
     glVertex3f(0,0,0.5);
+    glColor3ub(0,0,50);
     glVertex3f(4*sin(i/6.0*2*M_PI), 4*cos(i/6.0*2*M_PI),0);
   }
   glEnd();
@@ -114,8 +122,9 @@ void display() {
 //------------------------------------------------------------------
   if (tf1==1){
     glPushMatrix();
-    glRotated(15,0,-1,0);
-    glTranslated(0,0,-14.5);
+    glRotated(45,0,-1,0);
+    glRotated(25,0,0,-1);
+    glTranslated(0,-5,-18.5);
     drawTieFighter();
     glPopMatrix();
   }
@@ -123,7 +132,7 @@ void display() {
     glPushMatrix();
     glScaled(1.1,1.1,1.1);
     glRotated(15,0,-1,0);
-    glTranslated(0,0,-7);
+    glTranslated(0,5,-7);
     drawTieFighter();
     glPopMatrix();
   }
@@ -132,7 +141,7 @@ void display() {
     glScaled(1.3,1.3,1.3);
     glRotated(-15,0,-1,0);
     glRotated(45,0,0,1);
-    glTranslated(0,0,1);
+    glTranslated(-10,0,1);
     drawTieFighter();
     glPopMatrix();
   }
@@ -142,7 +151,7 @@ void display() {
     glRotated(-15,0,-1,0);
     glRotated(45,0,0,-1);
     glRotated(15,1,0,0);
-    glTranslated(0,0,8.5);
+    glTranslated(0,10,8.5);
     drawTieFighter();
     glPopMatrix();
   }
@@ -270,7 +279,14 @@ int main(int argc,char* argv[]) {
    //  Tell GLUT to call "key" when a key is pressed
    glutKeyboardFunc(key);
    //  Pass control to GLUT so it can interact with the user
+
+   //GLuint texture;
+   //texture = LoadTexture("space.jpg");
+
    glutMainLoop();
+
+   //FreeTexture(texture);
+
    return 0;
 }
 //------------------------------------------------------------------
