@@ -11,4 +11,4 @@ Left/Right 	|	Rotate view around x-axis
 
      A/a 	|	Toggle axes
 --------------------------------------
-Time to complete: 6 hours scattered over 2 days.
+Time to complete: 9 hours scattered over 4 days.

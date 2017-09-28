@@ -23,13 +23,11 @@ int axes=0;       //  Display axes
 int mode=0;       //  What to display
 int FPS=60;
 int tf1=1;
-int tf2=1;
+int tf2=0;
 int tf3=1;
 int tf4=1;
-
-//  Cosine and Sine in degrees
-//#define Cos(x) (cos((x)*3.1415927/180))
-//#define Sin(x) (sin((x)*3.1415927/180))
+int xw1=1;
+int xw2=1;
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
@@ -50,12 +48,6 @@ void Print(const char* format , ...) {
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-/*void background() {
-  int width, height;
-  unsigned char* image = SOIL_load_image("lead_960.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-  SOIL_free_image_data(image);
-}  */
 // Wings of TIE Fighter
 void hexagon() {
   glColor3ub(0,0,150);
@@ -81,8 +73,173 @@ void ellipse() {
 }
 // Arm pieces of TIE Fighter
 void cylinder() {
-  glColor3ub(150,150,150);
-  gluCylinder(gluNewQuadric(),0.1,0.5,3,20,20);
+  glColor3ub(100,100,100);
+  gluCylinder(gluNewQuadric(),0.1,0.5,3,32,32);
+}
+// Gunns for X-Wing wings
+void guns() {
+  glColor3ub(150,50,0);
+  gluCylinder(gluNewQuadric(),0.1,0.2,3,32,32);
+  //gluDisk(gluNewQuadric(),0,0.2,32,32);
+  //glTranslated(0,0,3);
+  //gluDisk(gluNewQuadric(),0,0.1,32,32);
+}
+// Rockets for X-Wing inner
+void rocket() {
+  glColor3ub(150,0,0);
+  gluCylinder(gluNewQuadric(),0.4,0.4,5,32,32);
+  glColor3ub(50,0,0);
+  gluDisk(gluNewQuadric(),0,0.4,32,32);
+  glTranslated(0,0,5);
+  gluDisk(gluNewQuadric(),0,0.4,32,32);
+}
+// Wings of X-Wing
+void wings() {
+  int org = 0;
+  float thick = 0.2;
+  int length = 7;
+  int h1 = 2;
+  int h2 = 1;
+  glColor3ub(0,100,50);
+  glBegin(GL_QUADS);
+  //side1
+  glVertex3f(org,org,org);
+  glVertex3f(length,org,org);
+  glVertex3f(length,h2,org);
+  glVertex3f(org,h1,org);
+  //side2
+  glVertex3f(org,org,thick);
+  glVertex3f(length,org,thick);
+  glVertex3f(length,h2,thick);
+  glVertex3f(org,h1,thick);
+  //big
+  glVertex3f(org,org,org);
+  glVertex3f(org,h1,org);
+  glVertex3f(org,h1,thick);
+  glVertex3f(org,org,thick);
+  //small
+  glColor3ub(100,0,0);
+  glVertex3f(org,org,org);
+  glVertex3f(org,org,thick);
+  glVertex3f(length,org,thick);
+  glVertex3f(length,org,org);
+  //bottom
+  glVertex3f(length,org,org);
+  glVertex3f(length,org,thick);
+  glVertex3f(length,h2,thick);
+  glVertex3f(length,h2,org);
+  //tip
+  glVertex3f(org,org,org);
+  glVertex3f(org,org,thick);
+  glVertex3f(org,h1,thick);
+  glVertex3f(org,h1,org);
+  //top
+  glVertex3f(org,h1,org);
+  glVertex3f(org,h1,thick);
+  glVertex3f(length,h2,thick);
+  glVertex3f(length,h2,org);
+
+  glEnd();
+
+  glTranslated(7,3,0.1);
+  glRotated(90,0,0,0);
+  guns();
+
+  glPushMatrix();
+  glTranslated(-5,0,0);
+  rocket();
+  glPopMatrix();
+}
+// Fuselage of X-Wing
+void body() {
+  int org = 0;
+  int l = 4;
+  int w = 2;
+  int h = 2;
+  glColor3ub(0,0,125);
+  glBegin(GL_QUADS);  
+  // Back
+  glVertex3f(org,org,org);
+  glVertex3f(org,w,org);
+  glVertex3f(org,w,h);
+  glVertex3f(org,org,h);
+  // Front
+  glVertex3f(l,org,org);
+  glVertex3f(l,w,org);
+  glVertex3f(l,w,h);
+  glVertex3f(l,org,h);
+  glColor3ub(0,0,100);
+  // Side2
+  glVertex3f(org,org,org);
+  glVertex3f(l,org,org);
+  glVertex3f(l,org,h);
+  glVertex3f(org,org,h);
+  // Side 2
+  glVertex3f(org,w,org);
+  glVertex3f(l,w,org);
+  glVertex3f(l,w,h);
+  glVertex3f(org,w,h);
+  // Top
+  glColor3ub(0,0,150);
+  glVertex3f(org,org,org);
+  glVertex3f(org,w,org);
+  glVertex3f(l,w,org);
+  glVertex3f(l,org,org);
+  //Bottom
+  glVertex3f(org,org,h);
+  glVertex3f(org,w,h);
+  glVertex3f(l,w,h);
+  glVertex3f(l,org,h);
+
+  glEnd();
+}
+// Nose of X-Wing
+void nose() {
+  int org = 0;
+  float thick = 2;
+  int length = 7;
+  int h1 = 2;
+  float h2 = 0.5;
+  glColor3ub(0,0,100);
+  glBegin(GL_QUADS);
+  //side1
+  glVertex3f(org,org,org);
+  glVertex3f(length,org,org);
+  glVertex3f(length,h2,org);
+  glVertex3f(org,h1,org);
+  //side2
+  glVertex3f(org,org,thick);
+  glVertex3f(length,org,thick);
+  glVertex3f(length,h2,thick);
+  glVertex3f(org,h1,thick);
+  //big
+  glVertex3f(org,org,org);
+  glVertex3f(org,h1,org);
+  glVertex3f(org,h1,thick);
+  glVertex3f(org,org,thick);
+  //small
+  glColor3ub(0,0,150);
+  glVertex3f(org,org,org);
+  glVertex3f(org,org,thick);
+  glVertex3f(length,org,thick);
+  glVertex3f(length,org,org);
+  //bottom
+  glVertex3f(length,org,org);
+  glVertex3f(length,org,thick);
+  glVertex3f(length,h2,thick);
+  glVertex3f(length,h2,org);
+  //tip
+  glVertex3f(org,org,org);
+  glVertex3f(org,org,thick);
+  glVertex3f(org,h1,thick);
+  glVertex3f(org,h1,org);
+  //top
+  glVertex3f(org,h1,org);
+  glVertex3f(org,h1,thick);
+  glVertex3f(length,h2,thick);
+  glVertex3f(length,h2,org);
+
+  glEnd();
 }
 //------------------------------------------------------------------
 //------------------------------------------------------------------
@@ -105,21 +262,47 @@ void drawTieFighter() {
 
   glPopMatrix();
 }
+//Draws the X-Wing object
+void drawXWing() {
+  glPushMatrix();
+  wings();
+  glRotated(180,0,1,-1);
+  glTranslated(8,-3,-0.2);
+  wings();
+  glPopMatrix();
+
+  glPushMatrix();
+  glRotated(30,0,1,0);
+  wings();
+  glRotated(180,0,1,-1);
+  glTranslated(8,-3,0.2);
+  wings();
+  glPopMatrix();
+
+  glPushMatrix();
+  glRotated(90,0,0,1);
+  glRotated(15,1,0,0);
+  glTranslated(0,-0.5,-1);
+  body();
+  glRotated(90,1,0,0);
+  glTranslated(4,0,-2);
+  nose();
+  glPopMatrix();
+}
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 // Display all the object in the viewer
 void display() {
   const double len = 4;
-
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
   glLoadIdentity();
   glOrtho(-5,5,-5,5,-10,10);
-
   glRotated(ph,1,0,0);
   glRotated(th,0,1,0);
-//------------------------------------------------------------------
+
+
   if (tf1==1){
     glPushMatrix();
     glRotated(45,0,-1,0);
@@ -130,7 +313,7 @@ void display() {
   }
   if (tf2 == 1) {
     glPushMatrix();
-    glScaled(1.1,1.1,1.1);
+    glScaled(1,1,1);
     glRotated(15,0,-1,0);
     glTranslated(0,5,-7);
     drawTieFighter();
@@ -147,7 +330,7 @@ void display() {
   }
   if (tf4 == 1) {
     glPushMatrix();
-    glScaled(1.5,1.5,1.5);
+    glScaled(1,1,1);
     glRotated(-15,0,-1,0);
     glRotated(45,0,0,-1);
     glRotated(15,1,0,0);
@@ -155,7 +338,24 @@ void display() {
     drawTieFighter();
     glPopMatrix();
   }
-//------------------------------------------------------------------
+  if (xw1 == 1) {
+    glPushMatrix();
+    glScaled(0.7,0.7,0.7);
+    glRotated(230,0,-1,-1);
+    glTranslated(8,-4,0);
+    drawXWing();
+    glPopMatrix();
+  }
+  if (xw2 == 1) {
+    glPushMatrix();
+    glScaled(0.7,0.7,0.7);
+    glRotated(230,-1,-1,0);
+    glTranslated(6,-20,14);
+    drawXWing();
+    glPopMatrix();
+  }
+
+
   glColor3f(1,1,1);
   //  Draw axes
   if (axes) {
