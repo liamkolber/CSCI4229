@@ -273,9 +273,9 @@ void drawTieFighter() {
   glColor3ub(0,255,0);
   glRotated(90,1,0,0);
   glRotated(90,0,1,0);
-  glTranslated(0,2,4);
-  lasers();
   glTranslated(0,2,1);
+  lasers();
+  glTranslated(0,2,4);
   lasers();
 
   glPopMatrix();
