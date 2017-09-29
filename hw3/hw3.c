@@ -299,8 +299,8 @@ void drawXWing() {
 
   glPushMatrix();
   glRotated(90,0,0,1);
-  glRotated(15,1,0,0);
-  glTranslated(0,-0.5,-1);
+  glRotated(12,1,0,0);
+  glTranslated(-0.5,-0.5,-1);
   body();
   glRotated(90,1,0,0);
   glTranslated(4,0,-2);
