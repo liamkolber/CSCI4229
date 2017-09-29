@@ -413,9 +413,7 @@ void display() {
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-/*
- *  GLUT calls this routine when an arrow key is pressed
- */
+// Called when an arrow key is pressed
 void special(int key,int x,int y) {
    //  Right arrow key - increase angle by 5 degrees
    if (key == GLUT_KEY_RIGHT)
@@ -438,9 +436,7 @@ void special(int key,int x,int y) {
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-/*
- *  GLUT calls this routine when a key is pressed
- */
+// Called when an arrow key is pressed
 void key(unsigned char ch,int x,int y) {
   //  Exit on ESC
   if (ch == 27)
@@ -462,9 +458,7 @@ void key(unsigned char ch,int x,int y) {
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-/*
- *  GLUT calls this routine when the window is resized
- */
+// Called when window is resized
 void reshape(int width,int height) {
    const double dim=2.5;
    //  Ratio of the width to the height of the window
@@ -485,9 +479,7 @@ void reshape(int width,int height) {
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
-/*
- *  Start up GLUT and tell it what to do
- */
+// Does the thing
 int main(int argc,char* argv[]) {
    //  Initialize GLUT and process user parameters
    glutInit(&argc,argv);
