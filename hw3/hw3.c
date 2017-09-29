@@ -50,6 +50,7 @@ void Print(const char* format , ...) {
 //------------------------------------------------------------------
 // FRICKIN' LASER BEAMS
 void lasers() {
+  //glColor3ub(0,150,0);
   gluCylinder(gluNewQuadric(),0.1,0.1,3,32,32);
 }
 // Wings of TIE Fighter
@@ -60,6 +61,7 @@ void hexagon() {
     glColor3ub(0,0,150);
     glVertex3f(4*sin(i/6.0*2*M_PI), 4*cos(i/6.0*2*M_PI),0);
     glVertex3f(0,0,0.5);
+    glVertex3f(0,0,-0.5);
     glColor3ub(0,0,50);
     glVertex3f(4*sin(i/6.0*2*M_PI), 4*cos(i/6.0*2*M_PI),0);
   }
@@ -72,7 +74,7 @@ void sphere() {
 }
 // Window piece of TIE Fighter
 void ellipse() {
-  glColor3ub(0,150,0);
+  glColor3ub(0,100,50);
   glutSolidSphere(0.9,20,20);
 }
 // Arm pieces of TIE Fighter
@@ -84,7 +86,11 @@ void cylinder() {
 void guns() {
   glColor3ub(150,50,0);
   gluCylinder(gluNewQuadric(),0.1,0.2,3,32,32);
-  //gluDisk(gluNewQuadric(),0,0.2,32,32);
+  glPushMatrix();
+  glTranslated(0,0,1);
+  glColor3ub(100,0,0);
+  gluDisk(gluNewQuadric(),0,0.4,32,32);
+  glPopMatrix();
   //glTranslated(0,0,3);
   //gluDisk(gluNewQuadric(),0,0.1,32,32);
 }
@@ -233,6 +239,7 @@ void nose() {
   glVertex3f(length,h2,thick);
   glVertex3f(length,h2,org);
   //tip
+  //glColor3ub(0,0,125);
   glVertex3f(org,org,org);
   glVertex3f(org,org,thick);
   glVertex3f(org,h1,thick);
