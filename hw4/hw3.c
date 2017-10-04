@@ -748,8 +748,6 @@ void key(unsigned char ch,int x,int y) {
    //  Toggle axes
    else if (ch == 'a' || ch == 'A')
       axes = 1-axes;
-   else if (ch == 's' || ch == 'S')
-     smoking = 1-smoking; 
    else if (ch == 'm' || ch == 'M')
      mode = 1-mode;
    //  Change field of view angle
