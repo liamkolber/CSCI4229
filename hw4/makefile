@@ -30,7 +30,7 @@ endif
 	g++ -c $(CFLG) $<
 
 #  Link
-run:hw3.o
+run:hw4.o
 	gcc -O3 -o $@ $^   $(LIBS)
 
 #  Clean

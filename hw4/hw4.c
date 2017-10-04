@@ -1,3 +1,7 @@
+// Liam Kolber
+// CSCI 4229
+// CU Boulder Fall 2017
+// Assignment 4
 //------------------------------------------------------------------
 //------------------------------------------------------------------
 //------------------------------------------------------------------
@@ -13,11 +17,11 @@
 #include <GL/glut.h>
 #endif
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//-----------------------Global Variables---------------------------
 //------------------------------------------------------------------
 // Global Variables
 int th=90;        //  Azimuth of view angle
-int ph=-15;        //  Elevation of view angle
+int ph=-5;        //  Elevation of view angle
 double zh=0;      //  Rotation of teapot
 int axes=0;       //  Display axes
 int mode=0;       //  What to display
@@ -37,7 +41,7 @@ float PI = 3.1415962;
 #define Cos(x) (cos((x)*3.1415927/180))
 #define Sin(x) (sin((x)*3.1415927/180))
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//---------------------------General Stuff--------------------------
 //------------------------------------------------------------------
 // Text output
 #define LEN 8192  //  Maximum length of text string
@@ -53,9 +57,7 @@ void Print(const char* format , ...) {
    while (*ch)
       glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*ch++);
 }
-/*
- *  Set projection
- */
+// Set projection
 static void Project() {
    //  Tell OpenGL we want to manipulate the projection matrix
    glMatrixMode(GL_PROJECTION);
@@ -63,7 +65,7 @@ static void Project() {
    glLoadIdentity();
    //  Perspective transformation
    if (mode)
-      gluPerspective(fov,asp,dim/10,10*dim);
+      gluPerspective(fov,asp,dim/4,4*dim);
    //  Orthogonal projection
    else
       glOrtho(-asp*dim,+asp*dim, -dim,+dim, -dim,+dim);
@@ -73,7 +75,7 @@ static void Project() {
    glLoadIdentity();
 }
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//---------------------------Object Parts---------------------------
 //------------------------------------------------------------------
 // FRICKIN' LASER BEAMS
 void lasers() {
@@ -126,146 +128,128 @@ void hexagon() {
   glEnd();
 }
 // Body of TIE Fighter
-static void Vertex1(double th,double ph) {
-   //glColor4f(1,1,1,1);
-   glColor3ub(200,0,0);
-   glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
-}
 void sphere() {
   glColor3ub(200,0,0);
-   const int d=5;
-   int th,ph;
-   double r = 1;
+  const int d=5;
+  int th,ph;
+  double r = 1;
+  //  Save transformation
+  glPushMatrix();
+  //  Offset and scale
+  glColor3ub(200,0,0);
+  glScaled(r,r,r);
 
-   //  Save transformation
-   glPushMatrix();
-   //  Offset and scale
-   glColor3ub(200,0,0);
-   glScaled(r,r,r);
-
-   //  Latitude bands
-   for (ph=-90;ph<90;ph+=d)
-   {
-      glBegin(GL_QUAD_STRIP);
-      glColor3ub(200,0,0);
-      for (th=0;th<=360;th+=d)
-      {
-         Vertex1(th,ph);
-         Vertex1(th,ph+d);
-      }
-      glEnd();
-   }
-
-   //  Undo transformations
-   glPopMatrix();
+  //  Latitude bands
+  for (ph=-90;ph<90;ph+=d) {
+    glBegin(GL_QUAD_STRIP);
+    glColor3ub(200,0,0);
+    for (th=0;th<=360;th+=d) {
+       glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
+       glVertex3d(Sin(th)*Cos(ph+d) , Sin(ph+d) , Cos(th)*Cos(ph+d));
+    }
+    glEnd();
+  }
+  //  Undo transformations
+  glPopMatrix();
 }
 // Window piece of TIE Fighter
-static void Vertex2(double th,double ph) {
-   //glColor4f(1,1,1,1);
-   glColor3ub(0,100,50);
-   glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
-}
 void ellipse() {
   glColor3ub(0,100,50);
-     const int d=5;
-   int th,ph;
-   double r = 0.9;
+  const int d=5;
+  int th,ph;
+  double r = 0.9;
+  //  Save transformation
+  glPushMatrix();
+  //  Offset and scale
+  glColor3ub(0,100,50);
+  glTranslated(0.05,0,0);
+  glScaled(r,r,r);
 
-   //  Save transformation
-   glPushMatrix();
-   //  Offset and scale
-   glColor3ub(0,100,50);
-   glTranslated(0.05,0,0);
-   glScaled(r,r,r);
-
-   //  Latitude bands
-   for (ph=-90;ph<90;ph+=d)
-   {
-      glBegin(GL_QUAD_STRIP);
-      for (th=0;th<=360;th+=d)
-      {
-         Vertex2(th,ph);
-         Vertex2(th,ph+d);
-      }
-      glEnd();
-   }
-
-   //  Undo transformations
-   glPopMatrix();
+  //  Latitude bands
+  for (ph=-90;ph<90;ph+=d) {
+    glBegin(GL_QUAD_STRIP);
+    for (th=0;th<=360;th+=d) {
+     glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
+     glVertex3d(Sin(th)*Cos(ph+d) , Sin(ph+d) , Cos(th)*Cos(ph+d));
+    }
+    glEnd();
+  }
+  //  Undo transformations
+  glPopMatrix();
 }
 // Arm pieces of TIE Fighter
 void cylinder() {
   //0.1,0.5
   glColor3ub(100,100,100);
-      GLfloat radius = 0.5;
-    GLfloat height = 5;
-    GLfloat x              = 0.0;
-    GLfloat y              = 0.0;
-    GLfloat angle          = 0.0;
-    GLfloat angle_stepsize = 0.1;
+  GLfloat radius = 0.5;
+  GLfloat height = 5;
+  GLfloat x              = 0.0;
+  GLfloat y              = 0.0;
+  GLfloat angle          = 0.0;
+  GLfloat angle_stepsize = 0.1;
 
-    /** Draw the tube */
-    glBegin(GL_QUAD_STRIP);
-    angle = 0.0;
-        while( angle < 2*PI ) {
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-            glVertex3f(x, y , height);
-            glVertex3f(x, y , 0.0);
-            angle = angle + angle_stepsize;
-        }
-        glVertex3f(radius, 0.0, height);
-        glVertex3f(radius, 0.0, 0.0);
-    glEnd();
+  /** Draw the tube */
+  glBegin(GL_QUAD_STRIP);
+  angle = 0.0;
+      while( angle < 2*PI ) {
+          x = radius * cos(angle);
+          y = radius * sin(angle);
+          glVertex3f(x, y , height);
+          glVertex3f(x, y , 0.0);
+          angle = angle + angle_stepsize;
+      }
+      glVertex3f(radius, 0.0, height);
+      glVertex3f(radius, 0.0, 0.0);
+  glEnd();
 
-    /** Draw the circle on top of cylinder */
-    glBegin(GL_POLYGON);
-    angle = 0.0;
-        while( angle < 2*PI ) {
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-            glVertex3f(x, y , height);
-            angle = angle + angle_stepsize;
-        }
-        glVertex3f(radius, 0.0, height);
-    glEnd();
+  /** Draw the circle on top of cylinder */
+  glBegin(GL_POLYGON);
+  angle = 0.0;
+      while( angle < 2*PI ) {
+          x = radius * cos(angle);
+          y = radius * sin(angle);
+          glVertex3f(x, y , height);
+          angle = angle + angle_stepsize;
+      }
+      glVertex3f(radius, 0.0, height);
+  glEnd();
 }
 // Gunns for X-Wing wings
 void guns() {
   //0.1,0.2
   glColor3ub(150,50,0);
-    GLfloat radius = 0.1;
-    GLfloat height = 5;
-    GLfloat x              = 0.0;
-    GLfloat y              = 0.0;
-    GLfloat angle          = 0.0;
-    GLfloat angle_stepsize = 0.1;
+  GLfloat radius = 0.1;
+  GLfloat height = 5;
+  GLfloat x              = 0.0;
+  GLfloat y              = 0.0;
+  GLfloat angle          = 0.0;
+  GLfloat angle_stepsize = 0.1;
 
-    /** Draw the tube */
-    glBegin(GL_QUAD_STRIP);
-    angle = 0.0;
-        while( angle < 2*PI ) {
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-            glVertex3f(x, y , height);
-            glVertex3f(x, y , 0.0);
-            angle = angle + angle_stepsize;
-        }
-        glVertex3f(radius, 0.0, height);
-        glVertex3f(radius, 0.0, 0.0);
-    glEnd();
+  /** Draw the tube */
+  glBegin(GL_QUAD_STRIP);
+  angle = 0.0;
+    while( angle < 2*PI ) {
+      x = radius * cos(angle);
+      y = radius * sin(angle);
+      glVertex3f(x, y , height);
+      glVertex3f(x, y , 0.0);
+      angle = angle + angle_stepsize;
+    }
+    glVertex3f(radius, 0.0, height);
+    glVertex3f(radius, 0.0, 0.0);
+  glEnd();
 
-    /** Draw the circle on top of cylinder */
-    glBegin(GL_POLYGON);
-    angle = 0.0;
-        while( angle < 2*PI ) {
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-            glVertex3f(x, y , height);
-            angle = angle + angle_stepsize;
-        }
-        glVertex3f(radius, 0.0, height);
-    glEnd();
+  /** Draw the circle on top of cylinder */
+  glBegin(GL_POLYGON);
+  angle = 0.0;
+    while( angle < 2*PI ) {
+      x = radius * cos(angle);
+      y = radius * sin(angle);
+      glVertex3f(x, y , height);
+      angle = angle + angle_stepsize;
+    }
+    glVertex3f(radius, 0.0, height);
+  glEnd();
   glPushMatrix();
   glTranslated(0,0,1);
   //0,0.4
@@ -279,38 +263,38 @@ void guns() {
 void rocket() {
   glColor3ub(150,0,0);
   //0.4,0.4
-    GLfloat radius = 0.4;
-    GLfloat height = 5;
-    GLfloat x              = 0.0;
-    GLfloat y              = 0.0;
-    GLfloat angle          = 0.0;
-    GLfloat angle_stepsize = 0.1;
+  GLfloat radius = 0.4;
+  GLfloat height = 5;
+  GLfloat x              = 0.0;
+  GLfloat y              = 0.0;
+  GLfloat angle          = 0.0;
+  GLfloat angle_stepsize = 0.1;
 
-    /** Draw the tube */
-    glBegin(GL_QUAD_STRIP);
-    angle = 0.0;
-        while( angle < 2*PI ) {
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-            glVertex3f(x, y , height);
-            glVertex3f(x, y , 0.0);
-            angle = angle + angle_stepsize;
-        }
-        glVertex3f(radius, 0.0, height);
-        glVertex3f(radius, 0.0, 0.0);
-    glEnd();
+  /** Draw the tube */
+  glBegin(GL_QUAD_STRIP);
+  angle = 0.0;
+    while( angle < 2*PI ) {
+      x = radius * cos(angle);
+      y = radius * sin(angle);
+      glVertex3f(x, y , height);
+      glVertex3f(x, y , 0.0);
+      angle = angle + angle_stepsize;
+    }
+    glVertex3f(radius, 0.0, height);
+    glVertex3f(radius, 0.0, 0.0);
+  glEnd();
 
-    /** Draw the circle on top of cylinder */
-    glBegin(GL_POLYGON);
-    angle = 0.0;
-        while( angle < 2*PI ) {
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-            glVertex3f(x, y , height);
-            angle = angle + angle_stepsize;
-        }
-        glVertex3f(radius, 0.0, height);
-    glEnd();
+  /** Draw the circle on top of cylinder */
+  glBegin(GL_POLYGON);
+  angle = 0.0;
+    while( angle < 2*PI ) {
+      x = radius * cos(angle);
+      y = radius * sin(angle);
+      glVertex3f(x, y , height);
+      angle = angle + angle_stepsize;
+    }
+    glVertex3f(radius, 0.0, height);
+  glEnd();
   //gluCylinder(gluNewQuadric(),0.4,0.4,5,32,32);
   //glColor3ub(50,0,0);
   //gluDisk(gluNewQuadric(),0,0.4,32,32);
@@ -492,9 +476,9 @@ void cockpit() {
   //gluDisk(gluNewQuadric(),0,0.9,32,32);
 }
 //------------------------------------------------------------------
+//--------------------------Object Assembly-------------------------
 //------------------------------------------------------------------
-//------------------------------------------------------------------
-// Draws the TIE Fighter object 
+// Assembles the TIE Fighter object 
 void drawTieFighter() {
   glPushMatrix();
 
@@ -519,7 +503,7 @@ void drawTieFighter() {
 
   glPopMatrix();
 }
-// Draws the X-Wing object
+// Assembles the X-Wing object
 void drawXWing() {
   glPushMatrix();
   wings();
@@ -554,7 +538,7 @@ void drawXWing() {
   lasers();
   glPopMatrix();
 }
-// Draws Millenium Falcon
+// Assembles Millenium Falcon object
 void drawMilleniumFalcon() {
   glPushMatrix();
   falconBody();
@@ -586,7 +570,7 @@ void drawMilleniumFalcon() {
   glPopMatrix();
 }
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//---------------------------Display Scene--------------------------
 //------------------------------------------------------------------
 // Display all the object in the viewer
 void display() {
@@ -594,25 +578,18 @@ void display() {
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
   glLoadIdentity();
-  //glOrtho(-5,5,-5,5,-10,10);
-  //glRotated(ph,1,0,0);
-  //glRotated(th,0,1,0);
   //  Perspective - set eye position
-   if (mode)
-   {
+   if (mode) {
       double Ex = -2*dim*Sin(th)*Cos(ph);
       double Ey = +2*dim        *Sin(ph);
       double Ez = +2*dim*Cos(th)*Cos(ph);
       gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
    }
    //  Orthogonal - set world orientation
-   else
-   {
+   else {
       glRotatef(ph,1,0,0);
       glRotatef(th,0,1,0);
    }
-
-
   if (tf1==1){
     glPushMatrix();
     glRotated(45,0,-1,0);
@@ -672,8 +649,6 @@ void display() {
     drawMilleniumFalcon();
     glPopMatrix();
   }
-
-
   glColor3f(1,1,1);
   //  Draw axes
   if (axes) {
@@ -741,7 +716,7 @@ void key(unsigned char ch,int x,int y) {
    if (ch == 27)
       exit(0);
    //  Reset view angle
-   else if (ch == '0'){
+   else if (ch == '0') {
       th = 0;
       ph = 5;
    }
@@ -755,7 +730,6 @@ void key(unsigned char ch,int x,int y) {
       fov--;
    else if (ch == '+' && ch<179)
       fov++;
-
    Project();
    //  Tell GLUT it is necessary to redisplay the scene
    glutPostRedisplay();
@@ -780,10 +754,10 @@ int main(int argc,char* argv[]) {
    //  Initialize GLUT and process user parameters
    glutInit(&argc,argv);
    //  Request double buffered, true color window with Z buffering at 600x600
-   glutInitWindowSize(1200,600);
+   glutInitWindowSize(600,600);
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
    //  Create the window
-   glutCreateWindow("Liam Kolber: Assignment 3");
+   glutCreateWindow("Liam Kolber: Assignment 4");
    //  Tell GLUT to call "display" when the scene should be drawn
    glutDisplayFunc(display);
    //  Tell GLUT to call "reshape" when the window is resized
