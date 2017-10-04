@@ -3,7 +3,7 @@
 // CU Boulder Fall 2017
 // Assignment 4
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//---------------------------Initializations------------------------
 //------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
@@ -579,17 +579,17 @@ void display() {
   glEnable(GL_DEPTH_TEST);
   glLoadIdentity();
   //  Perspective - set eye position
-   if (mode) {
-      double Ex = -2*dim*Sin(th)*Cos(ph);
-      double Ey = +2*dim        *Sin(ph);
-      double Ez = +2*dim*Cos(th)*Cos(ph);
-      gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
-   }
-   //  Orthogonal - set world orientation
-   else {
-      glRotatef(ph,1,0,0);
-      glRotatef(th,0,1,0);
-   }
+  if (mode) {
+    double Ex = -2*dim*Sin(th)*Cos(ph);
+    double Ey = +2*dim        *Sin(ph);
+    double Ez = +2*dim*Cos(th)*Cos(ph);
+    gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
+  }
+  //  Orthogonal - set world orientation
+  else {
+    glRotatef(ph,1,0,0);
+    glRotatef(th,0,1,0);
+  }
   if (tf1==1){
     glPushMatrix();
     glRotated(45,0,-1,0);
@@ -678,7 +678,7 @@ void display() {
   glutSwapBuffers();
 }
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//-------------------------Special Function-------------------------
 //------------------------------------------------------------------
 // Called when an arrow key is pressed
 void special(int key,int x,int y) {
@@ -708,7 +708,7 @@ void special(int key,int x,int y) {
    glutPostRedisplay();
 }
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//---------------------------Key Function---------------------------
 //------------------------------------------------------------------
 // Called when an arrow key is pressed
 void key(unsigned char ch,int x,int y) {
@@ -735,7 +735,7 @@ void key(unsigned char ch,int x,int y) {
    glutPostRedisplay();
 }
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//-------------------------Reshape Function-------------------------
 //------------------------------------------------------------------
 // Called when window is resized
 void reshape(int width,int height) {
@@ -747,7 +747,7 @@ void reshape(int width,int height) {
    Project();
 }
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//---------------------------Main Function--------------------------
 //------------------------------------------------------------------
 // Does the thing
 int main(int argc,char* argv[]) {
@@ -771,5 +771,5 @@ int main(int argc,char* argv[]) {
    return 0;
 }
 //------------------------------------------------------------------
-//------------------------------------------------------------------
+//--------------------------------End-------------------------------
 //------------------------------------------------------------------
