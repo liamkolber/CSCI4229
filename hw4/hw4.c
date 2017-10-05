@@ -22,14 +22,14 @@
 // Global Variables
 int th=0;         //  Azimuth of view angle
 int ph=0;         //  Elevation of view angle
-double zh=0;      //  Rotation of teapot
 int axes=0;       //  Display axes
 int mode=0;       //  What to display
 double asp=1;     //  Aspect ratio
 double dim=20.0;  //  Size of world
 int fov=55;       //  Field of view (for perspective)
-int fp = 0;
-int rot = 0.0;    // For first-person view
+// First-person
+int fp = 0;       // Toggle
+int rot = 0.0;    // Rotational angle
 // Eye coords
 double Ex = 0;
 double Ey = 0;
