@@ -20,26 +20,35 @@
 //-----------------------Global Variables---------------------------
 //------------------------------------------------------------------
 // Global Variables
-int th=90;        //  Azimuth of view angle
-int ph=-5;        //  Elevation of view angle
+int th=0;         //  Azimuth of view angle
+int ph=0;         //  Elevation of view angle
 double zh=0;      //  Rotation of teapot
 int axes=0;       //  Display axes
 int mode=0;       //  What to display
 double asp=1;     //  Aspect ratio
-double dim=5.0;   //  Size of world
+double dim=20.0;  //  Size of world
 int fov=55;       //  Field of view (for perspective)
-int FPS=60;
+int fp = 0;
+int rot = 0.0;    // For first-person view
+// Eye coords
+double Ex = 0;
+double Ey = 0;
+double Ez = 5;
+// Centering Coords for fpv
+double Cx = 0; 
+double Cz = 0; 
+// Variables used for enabling/disabling objects during testing
 int tf1=1;
 int tf2=0;
 int tf3=1;
 int tf4=1;
 int xw1=1;
 int xw2=1;
-int falc=0;
-float PI = 3.1415962;
+int falc=1;
 //  Cosine and Sine in degrees
-#define Cos(x) (cos((x)*3.1415927/180))
-#define Sin(x) (sin((x)*3.1415927/180))
+float PI = 3.1415927;
+#define Cos(x) (cos((x)*PI/180))
+#define Sin(x) (sin((x)*PI/180))
 //------------------------------------------------------------------
 //---------------------------General Stuff--------------------------
 //------------------------------------------------------------------
@@ -64,11 +73,16 @@ static void Project() {
    //  Undo previous transformations
    glLoadIdentity();
    //  Perspective transformation
-   if (mode)
+   if(fp) {
       gluPerspective(fov,asp,dim/4,4*dim);
-   //  Orthogonal projection
-   else
-      glOrtho(-asp*dim,+asp*dim, -dim,+dim, -dim,+dim);
+   }
+   else {
+      if (mode)
+         gluPerspective(fov,asp,dim/4,4*dim);
+      //  Orthogonal projection
+      else
+         glOrtho(-asp*dim,+asp*dim, -dim,+dim, -dim,+dim);
+   } 
    //  Switch to manipulating the model matrix
    glMatrixMode(GL_MODELVIEW);
    //  Undo previous transformations
@@ -129,14 +143,12 @@ void hexagon() {
 }
 // Body of TIE Fighter
 void sphere() {
-  glColor3ub(200,0,0);
   const int d=5;
   int th,ph;
   double r = 1;
   //  Save transformation
   glPushMatrix();
   //  Offset and scale
-  glColor3ub(200,0,0);
   glScaled(r,r,r);
 
   //  Latitude bands
@@ -154,7 +166,6 @@ void sphere() {
 }
 // Window piece of TIE Fighter
 void ellipse() {
-  glColor3ub(0,100,50);
   const int d=5;
   int th,ph;
   double r = 0.9;
@@ -402,13 +413,13 @@ void body() {
   glEnd();
 }
 // Nose of X-Wing
-void nose() {
+void nose(r,g,b,r2,g2,b2) {
   int org = 0;
   float thick = 2;
   int length = 7;
   int h1 = 2;
   float h2 = 0.5;
-  glColor3ub(0,0,100);
+  glColor3ub(r,g,b); //100
   glBegin(GL_QUADS);
   //side1
   glVertex3f(org,org,org);
@@ -426,7 +437,7 @@ void nose() {
   glVertex3f(org,h1,thick);
   glVertex3f(org,org,thick);
   //small
-  glColor3ub(0,0,150);
+  glColor3ub(r2,g2,b2); //150
   glVertex3f(org,org,org);
   glVertex3f(org,org,thick);
   glVertex3f(length,org,thick);
@@ -452,28 +463,77 @@ void nose() {
 }
 // Body of Falcon
 void falconBody() {
-  glColor3ub(0,0,150);
   glBegin(GL_POLYGON);
   float sides = 50;
   for(int i = 0; i < sides; ++i) {
-    glColor3ub(0,0,150);
+    glColor3ub(0,50,50);
     glVertex3f(4*sin(i/sides*2*M_PI), 4*cos(i/sides*2*M_PI),0);
     glVertex3f(4*sin(i/sides*2*M_PI), 4*cos(i/sides*2*M_PI),1);
     glVertex3f(0,0,0.5);
     glVertex3f(0,0,-0.5);
-    glColor3ub(0,0,50);
+    glColor3ub(0,150,150);
     glVertex3f(4*sin(i/sides*2*M_PI), 4*cos(i/sides*2*M_PI),0);
   }
   glEnd();
 }
 // Cockpit of Falcon
+void tunnel() {
+  glColor3ub(0,125,125);
+  GLfloat radius = 0.9;
+  GLfloat height = 5;
+  GLfloat x              = 0.0;
+  GLfloat y              = 0.0;
+  GLfloat angle          = 0.0;
+  GLfloat angle_stepsize = 0.1;
+
+  /** Draw the tube */
+  glBegin(GL_QUAD_STRIP);
+  angle = 0.0;
+    while( angle < 2*PI ) {
+      x = radius * cos(angle);
+      y = radius * sin(angle);
+      glVertex3f(x, y , height);
+      glVertex3f(x, y , 0.0);
+      angle = angle + angle_stepsize;
+    }
+    glVertex3f(radius, 0.0, height);
+    glVertex3f(radius, 0.0, 0.0);
+  glEnd();
+
+  /** Draw the circle on top of cylinder */
+  glBegin(GL_POLYGON);
+  angle = 0.0;
+    while( angle < 2*PI ) {
+      x = radius * cos(angle);
+      y = radius * sin(angle);
+      glVertex3f(x, y , height);
+      angle = angle + angle_stepsize;
+    }
+    glVertex3f(radius, 0.0, height);
+  glEnd();
+}
+// COckpit of Falcon
 void cockpit() {
-  glColor3ub(0,0,125);
-  //gluCylinder(gluNewQuadric(),0.9,0.9,5,32,32);
-  //glColor3ub(0,0,100);
-  //gluDisk(gluNewQuadric(),0,0.9,32,32);
-  //glTranslated(0,0,5);
-  //gluDisk(gluNewQuadric(),0,0.9,32,32);
+  const int d=5;
+  int th,ph;
+  double r = 0.9;
+  //  Save transformation
+  glPushMatrix();
+  //  Offset and scale
+  glScaled(r,r,r);
+
+  //  Latitude bands
+  for (ph=-90;ph<90;ph+=d) {
+    glBegin(GL_QUAD_STRIP);
+    glColor3ub(0,75,75);
+    for (th=0;th<=360;th+=d) {
+       glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
+       glVertex3d(Sin(th)*Cos(ph+d) , Sin(ph+d) , Cos(th)*Cos(ph+d));
+    }
+    glEnd();
+  }
+  //  Undo transformations
+  glPopMatrix();
 }
 //------------------------------------------------------------------
 //--------------------------Object Assembly-------------------------
@@ -527,7 +587,7 @@ void drawXWing() {
   body();
   glRotated(90,1,0,0);
   glTranslated(4,0,-2);
-  nose();
+  nose(0,0,100,0,0,150);
 
   glColor3ub(255,0,0);
   glRotated(90,1,0,0);
@@ -548,24 +608,24 @@ void drawMilleniumFalcon() {
 
   glScaled(1,1.7,0.5);
   glTranslated(0,0.4,0);
-  nose();
+  nose(0,100,100,0,50,50);
   glRotated(180,0,0,0);
   glTranslated(0,0.75,-2);
-  nose();
+  nose(0,100,100,0,50,50);
 
   glScaled(1/1,1/1.7,1/0.5);
   glTranslated(2,4,0.5);
   glRotated(90,0,1,0);
   glRotated(110,1,0,0);
-  cockpit();
+  tunnel();
   glRotated(70,1,0,0);
-  glTranslated(0,-4.12,-3.5);
+  glTranslated(0,0.5,-1.8);
   glScaled(1,1,0.5);
-  cockpit();
-  glTranslated(0,0,-5);
+  tunnel();
+  glTranslated(0,0,0);
   glScaled(1,1,2);
   glColor3ub(0,0,150);
-  //glutSolidSphere(0.9,32,32);
+  cockpit();
 
   glPopMatrix();
 }
@@ -578,17 +638,26 @@ void display() {
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
   glLoadIdentity();
-  //  Perspective - set eye position
-  if (mode) {
-    double Ex = -2*dim*Sin(th)*Cos(ph);
-    double Ey = +2*dim        *Sin(ph);
-    double Ez = +2*dim*Cos(th)*Cos(ph);
-    gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
+
+  if (fp) {
+    Cx = +2*dim*Sin(rot); //Ajust the camera vector based on rot
+    Cz = -2*dim*Cos(rot);
+    gluLookAt(Ex,Ey,Ez, Cx+Ex,Ey,Cz+Ez, 0,1,0); //  Use gluLookAt, y is the up-axis
   }
-  //  Orthogonal - set world orientation
+  //  Perspective - set eye position
   else {
-    glRotatef(ph,1,0,0);
-    glRotatef(th,0,1,0);
+    //  Perspective - set eye position
+    if (mode) {
+      double px = -2*dim*Sin(th)*Cos(ph);
+      double py = +2*dim        *Sin(ph);
+      double pz = +2*dim*Cos(th)*Cos(ph);
+      gluLookAt(px,py,pz, 0,0,0, 0,Cos(ph),0);
+    }
+    //  Orthogonal - set world orientation
+    else {
+      glRotatef(ph,1,0,0);
+      glRotatef(th,0,1,0);
+    }
   }
   if (tf1==1){
     glPushMatrix();
@@ -643,8 +712,8 @@ void display() {
   }
   if (falc == 1) {
     glPushMatrix();
-    glTranslated(-15,-10,-15);
-    glRotated(90,0,1,0);
+    glTranslated(0,12,0);
+    glRotated(30,0,0,0);
     glScaled(1.5,1.5,1.5);
     drawMilleniumFalcon();
     glPopMatrix();
@@ -668,10 +737,37 @@ void display() {
     glRasterPos3d(0.0,0.0,len);
     Print("Z");
   }
-  //  Five pixels from the lower left corner of the window
-  glWindowPos2i(5,5);
-  //  Print the text string
-  Print("View Angle=%d,%d",th,ph);
+  // Print the text string
+  if (fp) {
+    // Five pixels from the lower left corner of the window
+    glWindowPos2i(5,5);
+    Print("FP = On    View Angle = %d",rot);
+    glWindowPos2i(5,150);
+    Print("W = Forwards");
+    glWindowPos2i(5,125);
+    Print("S = Backwards");
+    glWindowPos2i(5,100);
+    Print("A = Look left");
+    glWindowPos2i(5,75);
+    Print("D = Look right");
+  }
+  else {
+    // Five pixels from the lower left corner of the window
+    glWindowPos2i(5,5);
+    Print("Angle = %d,%d   Dim = %.1f   FOV = %d   Projection = %s   First Person = Off",th,ph,dim,fov,mode?"Perpective":"Orthogonal");
+    glWindowPos2i(5,175);
+    Print("0 = Reset viewing angle");
+    glWindowPos2i(5,150);
+    Print("Arrow Keys = Rotate view");
+    glWindowPos2i(5,125);
+    Print("Page Up/Down = +/- dim");
+    glWindowPos2i(5,100);
+    Print("1/2 = +/- FOV");
+    glWindowPos2i(5,75);
+    Print("M = Change mode");
+    glWindowPos2i(5,50);
+    Print("9 = Toggle axes");
+  }
   //  Render the scene
   glFlush();
   //  Make the rendered scene visible
@@ -682,27 +778,30 @@ void display() {
 //------------------------------------------------------------------
 // Called when an arrow key is pressed
 void special(int key,int x,int y) {
-   //  Right arrow key - increase angle by 5 degrees
-   if (key == GLUT_KEY_RIGHT)
-      th += 5;
-   //  Left arrow key - decrease angle by 5 degrees
-   else if (key == GLUT_KEY_LEFT)
-      th -= 5;
-   //  Up arrow key - increase elevation by 5 degrees
-   else if (key == GLUT_KEY_UP)
-      ph += 5;
-   //  Down arrow key - decrease elevation by 5 degrees
-   else if (key == GLUT_KEY_DOWN)
-      ph -= 5;
-   //  PageUp key - increase dim
-   else if (key == GLUT_KEY_PAGE_UP)
-      dim += 0.1;
-   //  PageDown key - decrease dim
-   else if (key == GLUT_KEY_PAGE_DOWN && dim>1)
-      dim -= 0.1;
-   //  Keep angles to +/-360 degrees
-   th %= 360;
-   ph %= 360;
+   if(!fp) {
+      //  Right arrow key - increase angle by 5 degrees
+      if (key == GLUT_KEY_RIGHT)
+         th += 5;
+      //  Left arrow key - decrease angle by 5 degrees
+      else if (key == GLUT_KEY_LEFT)
+         th -= 5;
+      //  Up arrow key - increase elevation by 5 degrees
+      else if (key == GLUT_KEY_UP)
+         ph += 5;
+      //  Down arrow key - decrease elevation by 5 degrees
+      else if (key == GLUT_KEY_DOWN)
+         ph -= 5;
+      //  PageUp key - increase dim
+      else if (key == GLUT_KEY_PAGE_UP && dim>1)
+         dim -= 0.1;
+      //  PageDown key - decrease dim
+      else if (key == GLUT_KEY_PAGE_DOWN)
+         dim += 0.1;
+      //  Keep angles to +/-360 degrees
+      th %= 360;
+      ph %= 360;
+   }
+   //  Update projection
    Project();
    //  Tell GLUT it is necessary to redisplay the scene
    glutPostRedisplay();
@@ -712,27 +811,54 @@ void special(int key,int x,int y) {
 //------------------------------------------------------------------
 // Called when an arrow key is pressed
 void key(unsigned char ch,int x,int y) {
-   //  Exit on ESC
-   if (ch == 27)
-      exit(0);
-   //  Reset view angle
-   else if (ch == '0') {
-      th = 0;
-      ph = 5;
-   }
-   //  Toggle axes
-   else if (ch == 'a' || ch == 'A')
-      axes = 1-axes;
-   else if (ch == 'm' || ch == 'M')
-     mode = 1-mode;
-   //  Change field of view angle
-   else if (ch == '-' && ch>1)
-      fov--;
-   else if (ch == '+' && ch<179)
-      fov++;
-   Project();
-   //  Tell GLUT it is necessary to redisplay the scene
-   glutPostRedisplay();
+  //  Exit on ESC
+  if (ch == 27)
+    exit(0);
+  //  Toggle axes
+  else if (ch == '9')
+    axes = 1-axes;
+  //  Toggle first person
+  else if (ch == 'f' || ch == 'F') {
+    fp = 1-fp;
+  }
+  // First Person Motion
+  if (fp) {
+    double dt = 0.05;
+    if (ch == 'w' || ch == 'W') {
+      Ex += Cx*dt; //Update the eye vector based on the camera vector
+      Ez += Cz*dt;
+    }
+    else if (ch == 'a' || ch == 'A'){
+      rot -= 3;
+    }
+    else if (ch == 's' || ch == 'S'){
+      Ex -= Cx*dt;
+      Ez -= Cz*dt;
+    }
+    else if (ch == 'd' || ch == 'D'){
+      rot += 3;
+    }
+    //  Keep angles to +/-360 degrees
+    rot %= 360;
+  }
+  else {
+    //  Reset view angle
+    if (ch == '0')
+       th = ph = 0;
+    //  Switch display mode
+    else if (ch == 'm' || ch == 'M')
+       mode = 1-mode;
+    //  Change field of view angle
+    else if (ch == '1')
+       fov--;
+    else if (ch == '2')
+       fov++;
+  }
+
+  //  Reproject
+  Project();
+  //  Tell GLUT it is necessary to redisplay the scene
+  glutPostRedisplay();
 }
 //------------------------------------------------------------------
 //-------------------------Reshape Function-------------------------
@@ -754,7 +880,7 @@ int main(int argc,char* argv[]) {
    //  Initialize GLUT and process user parameters
    glutInit(&argc,argv);
    //  Request double buffered, true color window with Z buffering at 600x600
-   glutInitWindowSize(600,600);
+   glutInitWindowSize(1200,900);
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
    //  Create the window
    glutCreateWindow("Liam Kolber: Assignment 4");

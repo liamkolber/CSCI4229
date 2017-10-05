@@ -1,7 +1,7 @@
 Liam Kolber
 CSCI 4229
-Homework 3
-Due: September 28, 2017
+Homework 4
+Due: October 5, 2017
 --------------------------------------
    KEYS 	|		Description
 --------------------------------------
@@ -9,8 +9,24 @@ Left/Right 	|	Rotate view around x-axis
 
   Up/Down 	|	Rotate view around y-axis
 
-     A/a 	|	Toggle axes
---------------------------------------
-Time to complete: 9 hours scattered over 4 days.
+Page Up/Down| 	Increase/decrease dim
 
-I edited the glut objects. Ignore the stuff about the millenium falcon. That is something I'm testing out for later use.
+     0   	|	Reset viewing angle
+
+     9		|	Toggle axes
+
+    1/2		|	Decrease/increase FOV
+
+    m/M 	|	Change mode
+
+    f/F 	|	Toggle first person view
+
+    w/W 	|	Forward
+
+    s/S 	|	Backward
+
+    a/A 	|	Look left
+
+    d/D 	| 	Look right	
+--------------------------------------
+Time to complete: 3 hours.
