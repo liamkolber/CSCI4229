@@ -227,7 +227,6 @@ void cylinder() {
 }
 // Gunns for X-Wing wings
 void guns() {
-  //0.1,0.2
   glColor3ub(150,50,0);
   GLfloat radius = 0.1;
   GLfloat height = 5;
@@ -236,6 +235,7 @@ void guns() {
   GLfloat angle          = 0.0;
   GLfloat angle_stepsize = 0.1;
 
+  glColor3ub(100,0,0);
   /** Draw the tube */
   glBegin(GL_QUAD_STRIP);
   angle = 0.0;
@@ -261,14 +261,16 @@ void guns() {
     }
     glVertex3f(radius, 0.0, height);
   glEnd();
-  glPushMatrix();
-  glTranslated(0,0,1);
-  //0,0.4
-  glColor3ub(100,0,0);
-  //gluDisk(gluNewQuadric(),0,0.4,32,32);
-  glPopMatrix();
-  //glTranslated(0,0,3);
-  //gluDisk(gluNewQuadric(),0,0.1,32,32);
+  glBegin(GL_POLYGON);
+  angle = 0.0;
+      while( angle < 2*PI ) {
+          x = radius * cos(angle);
+          y = radius * sin(angle);
+          glVertex3f(x, y , 0);
+          angle = angle + angle_stepsize;
+      }
+      glVertex3f(radius, 0.0, height);
+  glEnd();
 }
 // Rockets for X-Wing inner
 void rocket() {
@@ -306,11 +308,16 @@ void rocket() {
     }
     glVertex3f(radius, 0.0, height);
   glEnd();
-  //gluCylinder(gluNewQuadric(),0.4,0.4,5,32,32);
-  //glColor3ub(50,0,0);
-  //gluDisk(gluNewQuadric(),0,0.4,32,32);
-  //glTranslated(0,0,5);
-  //gluDisk(gluNewQuadric(),0,0.4,32,32);
+  glBegin(GL_POLYGON);
+  angle = 0.0;
+      while( angle < 2*PI ) {
+          x = radius * cos(angle);
+          y = radius * sin(angle);
+          glVertex3f(x, y , 0);
+          angle = angle + angle_stepsize;
+      }
+      glVertex3f(radius, 0.0, height);
+  glEnd();
 }
 // Wings of X-Wing
 void wings() {
