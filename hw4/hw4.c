@@ -17,25 +17,22 @@
 #include <GL/glut.h>
 #endif
 //------------------------------------------------------------------
-//-----------------------Global Variables---------------------------
+//-------------------------Global Variables-------------------------
 //------------------------------------------------------------------
-// Global Variables
-int th=0;         //  Azimuth of view angle
-int ph=0;         //  Elevation of view angle
-int axes=0;       //  Display axes
-int mode=0;       //  What to display
-double asp=1;     //  Aspect ratio
-double dim=20.0;  //  Size of world
-int fov=55;       //  Field of view (for perspective)
-// First-person
+int th=0;         // Azimuth of view angle
+int ph=0;         // Elevation of view angle
+int axes=0;       // Display axes
+int mode=0;       // What to display
+double asp=1;     // Aspect ratio
+double dim=20.0;  // Size of world
+int fov=55;       // Field of view (for perspective)
+// First-person specific
 int fp = 0;       // Toggle
 int rot = 0.0;    // Rotational angle
-// Eye coords
-double Ex = 0;
+double Ex = 0;    // Eye coords
 double Ey = 0;
 double Ez = 5;
-// Centering Coords for fpv
-double Cx = 0; 
+double Cx = 0;    // Centering coords
 double Cz = 0; 
 // Variables used for enabling/disabling objects during testing
 int tf1=1;
@@ -45,6 +42,7 @@ int tf4=1;
 int xw1=1;
 int xw2=1;
 int falc=1;
+int death=1;
 //  Cosine and Sine in degrees
 float PI = 3.1415927;
 #define Cos(x) (cos((x)*PI/180))
@@ -62,30 +60,30 @@ void Print(const char* format , ...) {
    va_start(args,format);
    vsnprintf(buf,LEN,format,args);
    va_end(args);
-   //  Display the characters one at a time at the current raster position
+   // Display characters one at a time at current raster position
    while (*ch)
       glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*ch++);
 }
 // Set projection
 static void Project() {
-   //  Tell OpenGL we want to manipulate the projection matrix
+   // Tell OpenGL we want to manipulate the projection matrix
    glMatrixMode(GL_PROJECTION);
-   //  Undo previous transformations
+   // Undo previous transformations
    glLoadIdentity();
-   //  Perspective transformation
+   // Perspective transformation
    if(fp) {
       gluPerspective(fov,asp,dim/4,4*dim);
    }
    else {
       if (mode)
          gluPerspective(fov,asp,dim/4,4*dim);
-      //  Orthogonal projection
+      // Orthogonal projection
       else
          glOrtho(-asp*dim,+asp*dim, -dim,+dim, -dim,+dim);
    } 
-   //  Switch to manipulating the model matrix
+   // Switch to manipulating the model matrix
    glMatrixMode(GL_MODELVIEW);
-   //  Undo previous transformations
+   // Undo previous transformations
    glLoadIdentity();
 }
 //------------------------------------------------------------------
@@ -94,7 +92,7 @@ static void Project() {
 // FRICKIN' LASER BEAMS
 void lasers() {
   //glColor3ub(0,150,0);
-      GLfloat radius = 0.1;
+    GLfloat radius = 0.1;
     GLfloat height = 5;
     GLfloat x              = 0.0;
     GLfloat y              = 0.0;
@@ -483,7 +481,7 @@ void falconBody() {
   }
   glEnd();
 }
-// Cockpit of Falcon
+// Tunnel to cockpit of Falcon
 void tunnel() {
   glColor3ub(0,125,125);
   GLfloat radius = 0.9;
@@ -519,7 +517,7 @@ void tunnel() {
     glVertex3f(radius, 0.0, height);
   glEnd();
 }
-// COckpit of Falcon
+// Cockpit of Falcon
 void cockpit() {
   const int d=5;
   int th,ph;
@@ -536,6 +534,30 @@ void cockpit() {
     for (th=0;th<=360;th+=d) {
        glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
        glVertex3d(Sin(th)*Cos(ph+d) , Sin(ph+d) , Cos(th)*Cos(ph+d));
+    }
+    glEnd();
+  }
+  //  Undo transformations
+  glPopMatrix();
+}
+// Death Star
+void deathStar() {
+  const int d=5;
+  int th,ph;
+  double r = 4;
+  //  Save transformation
+  glPushMatrix();
+  //  Offset and scale
+  glScaled(r,r,r);
+
+  //  Latitude bands
+  for (ph=-90;ph<90;ph+=d) {
+    glBegin(GL_QUAD_STRIP);
+    for (th=0;th<=360;th+=d) {
+      glColor3ub(75,75,75);
+      glVertex3d(Sin(th)*Cos(ph) , Sin(ph) , Cos(th)*Cos(ph));
+      glColor3ub(25,25,25);
+      glVertex3d(Sin(th)*Cos(ph+d) , Sin(ph+d) , Cos(th)*Cos(ph+d));
     }
     glEnd();
   }
@@ -649,7 +671,7 @@ void display() {
   if (fp) {
     Cx = +2*dim*Sin(rot); //Ajust the camera vector based on rot
     Cz = -2*dim*Cos(rot);
-    gluLookAt(Ex,Ey,Ez, Cx+Ex,Ey,Cz+Ez, 0,1,0); //  Use gluLookAt, y is the up-axis
+    gluLookAt(Ex,Ey,Ez, Cx+Ex,Ey,Cz+Ez, 0,1,0); // y is the up-axis
   }
   //  Perspective - set eye position
   else {
@@ -725,6 +747,15 @@ void display() {
     drawMilleniumFalcon();
     glPopMatrix();
   }
+  if (death == 1) {
+    glPushMatrix();
+    glTranslated(20,20,20);
+    glScaled(3,3,3);
+    deathStar();
+    glRotated(90,1,0,0);
+    deathStar();
+    glPopMatrix();
+  }
   glColor3f(1,1,1);
   //  Draw axes
   if (axes) {
@@ -783,7 +814,7 @@ void display() {
 //------------------------------------------------------------------
 //-------------------------Special Function-------------------------
 //------------------------------------------------------------------
-// Called when an arrow key is pressed
+// Called when an special key is pressed
 void special(int key,int x,int y) {
    if(!fp) {
       //  Right arrow key - increase angle by 5 degrees
@@ -816,7 +847,7 @@ void special(int key,int x,int y) {
 //------------------------------------------------------------------
 //---------------------------Key Function---------------------------
 //------------------------------------------------------------------
-// Called when an arrow key is pressed
+// Called when a key is pressed
 void key(unsigned char ch,int x,int y) {
   //  Exit on ESC
   if (ch == 27)
@@ -832,7 +863,7 @@ void key(unsigned char ch,int x,int y) {
   if (fp) {
     double dt = 0.05;
     if (ch == 'w' || ch == 'W') {
-      Ex += Cx*dt; //Update the eye vector based on the camera vector
+      Ex += Cx*dt; //Update the eye vector based on camera vector
       Ez += Cz*dt;
     }
     else if (ch == 'a' || ch == 'A'){
@@ -861,7 +892,6 @@ void key(unsigned char ch,int x,int y) {
     else if (ch == '2')
        fov++;
   }
-
   //  Reproject
   Project();
   //  Tell GLUT it is necessary to redisplay the scene
@@ -886,7 +916,7 @@ void reshape(int width,int height) {
 int main(int argc,char* argv[]) {
    //  Initialize GLUT and process user parameters
    glutInit(&argc,argv);
-   //  Request double buffered, true color window with Z buffering at 600x600
+   //  Request double buffered, true color window with Z buffering
    glutInitWindowSize(1200,900);
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
    //  Create the window

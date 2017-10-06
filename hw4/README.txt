@@ -2,9 +2,9 @@ Liam Kolber
 CSCI 4229
 Homework 4
 Due: October 5, 2017
---------------------------------------
-   KEYS 	|		Description
---------------------------------------
+------------------------------------------
+   KEYS 	|		  Description
+------------------------------------------
 Left/Right 	|	Rotate view around x-axis
 
   Up/Down 	|	Rotate view around y-axis
@@ -28,5 +28,5 @@ Page Up/Down| 	Increase/decrease dim
     a/A 	|	Look left
 
     d/D 	| 	Look right	
---------------------------------------
-Time to complete: 3 hours.
+------------------------------------------
+Time to complete: ~3 hours
