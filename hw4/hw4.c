@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
-//  OpenGL with prototypes for glext
+// OpenGL with prototypes for glext
 #define GL_GLEXT_PROTOTYPES
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -417,7 +417,7 @@ void body() {
 
   glEnd();
 }
-// Nose of X-Wing
+// Nose(s) of X-Wing and Falcon (hence color parameters)
 void nose(r,g,b,r2,g2,b2) {
   int org = 0;
   float thick = 2;
@@ -859,6 +859,15 @@ void key(unsigned char ch,int x,int y) {
   else if (ch == 'f' || ch == 'F') {
     fp = 1-fp;
   }
+  //  Pause Light
+  else if (ch == ' ') {
+    move = 1-move;
+  }
+  //  Move light
+  else if (ch == '<')
+    zh += 3;
+  else if (ch == '>')
+    zh -= 3;
   // First Person Motion
   if (fp) {
     double dt = 0.05;
@@ -894,6 +903,8 @@ void key(unsigned char ch,int x,int y) {
   }
   //  Reproject
   Project();
+  //  Animate if requested
+  glutIdleFunc(move?idle:NULL);
   //  Tell GLUT it is necessary to redisplay the scene
   glutPostRedisplay();
 }
